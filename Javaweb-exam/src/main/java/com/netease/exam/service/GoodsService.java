@@ -9,7 +9,7 @@ public interface GoodsService {
 	void setGoods(byte[] image);
 	void setgoods(int price,String title,String image,String summary,String detail);
 	int getLastId();
-	Goods getGoodsById(int id);
+	Goods getGoodsById(int object);
 	void updategood(int id,int price,String title,String image,String summary,String detail);
 	void deletegood(int id);
 }

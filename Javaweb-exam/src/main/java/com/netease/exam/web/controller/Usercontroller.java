@@ -18,6 +18,7 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -31,6 +32,7 @@ import com.netease.exam.service.GoodsService;
 import com.netease.exam.service.TradeService;
 import com.netease.exam.service.UserService;
 import com.netease.exam.service.impl.UserServiceImpl;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class Usercontroller {
@@ -206,9 +208,11 @@ public class Usercontroller {
 			//System.out.println(session.getAttribute("userType"));
 			map.addAttribute("user", user);
 		}
+		System.out.println(goods.size());
 		for(int i=0;i<goods.size();i++) {
 			Map<String,Object> GoodInfo=new HashMap<String,Object>();
-			trade=tradeService.getTrxByCon(i+1);
+			trade=tradeService.getTrxByCon(goods.get(i).getId());
+			System.out.println(trade.size());
 			if(trade.size()>0) {
 				GoodInfo.put("id", goods.get(i).getId());
 				GoodInfo.put("title", goods.get(i).getTitle());
@@ -353,21 +357,19 @@ public class Usercontroller {
 	
 	@RequestMapping(value="/api/buy.do",method=RequestMethod.POST)
 	@ResponseBody
-	public Map Userlogin(HttpSession session,HttpServletRequest request) throws IOException {
-		Map<String,String> res = new HashMap<String,String>();
-			/*for (Cookie cookie : cookies) {
-				System.out.println(cookie.getName()+"12334");
-			}
+	public Map Userlogin(@RequestBody List<Map<String,Object>> buyList,HttpSession session,HttpServletRequest request) throws IOException {
 			Map<String,String> res = new HashMap<String,String>(); 
-			//System.out.println(request.getParameterNames()+"jjj");
+			int id,num;
 			Goods good;
-			/*for(int i=0;i<buylist.size();i++) {
-				good=goodsService.getGoodsById((int)buylist.get(i).get("id"));
-				for (int j =0;j<(int)buylist.get(i).get("number");j++) {
+			System.out.println(buyList.get(0).get("id"));
+			for(int i=0;i<buyList.size();i++) {
+				id=Integer.parseInt((String) buyList.get(i).get("id"));
+				num=Integer.parseInt((String) buyList.get(i).get("number"));
+				good=goodsService.getGoodsById(id);
+				for (int j =0;j<num;j++) {
 					tradeService.setTrx(good.getId(), 1, good.getPrice(),20171029);
 				}
-			}*/
-			//System.out.println(data);
+			}
 			//goodsService.getGoodsById(id)(id);
             res.put("code", "200");
             res.put("message","密码正确");
@@ -377,18 +379,28 @@ public class Usercontroller {
 	
 	@RequestMapping(value="/api/upload.do",method=RequestMethod.POST)
 	@ResponseBody
-	public Map upload(@RequestParam("File") byte[] id,HttpSession session,HttpServletRequest request) throws IOException {
+	public Map upload(MultipartFile file,ModelMap map,HttpServletRequest request) throws IOException {
 		Map<String,String> res = new HashMap<String,String>();
-			System.out.println(id);
-            res.put("code", "200");
-            res.put("message","密码正确");
-            res.put("result", "true");
+			//System.out.println(id);
+            res.put("code", "400");
+            res.put("message","上传错误");
+            String fileType = "png,jpeg,jpg";
+            if (file != null) {
+            		if(fileType.indexOf(file.getContentType().split("/")[1])!=-1){
+            			String path = request.getServletContext().getRealPath("");
+            			System.out.println(file.getOriginalFilename());
+            			CreateIma(file.getBytes(),path,file.getOriginalFilename());
+                		res.put("code", "200");
+                		res.put("message","上传成功");
+                		res.put("result", "image/"+file.getOriginalFilename());
+            		}
+            }
             return res;
 	}
 	
-	public void CreateIma(byte[] image,String path){
+	public void CreateIma(byte[] image,String path,String name){
 		try {
-			FileOutputStream out = new FileOutputStream(path+"//image//ppp.png");
+			FileOutputStream out = new FileOutputStream(path+"//image//"+name);
 			out.write(image);
 			out.close();
 		} catch (FileNotFoundException e) {
