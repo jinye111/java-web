@@ -6,7 +6,7 @@
   <packaging>war</packaging>
   <dependencies>
   		  <build>
-    		<finalName>shopping</finalName>
+    		<finalName>Javaweb-exam</finalName>
     		<plugins>
       		<!-- 编译源码的JDK版本 -->
       			<plugin>
