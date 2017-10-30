@@ -4,8 +4,7 @@
   <artifactId>Javaweb-exam</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>war</packaging>
-  <dependencies>
-  		  <build>
+  <build>
     		<finalName>Javaweb-exam</finalName>
     		<plugins>
       		<!-- 编译源码的JDK版本 -->
@@ -25,8 +24,9 @@
 						<verbose>false</verbose>
 					</configuration>
 				</plugin>
-    	</plugins>
+    		</plugins>
   		</build>
+  <dependencies>
   		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>javax.servlet-api</artifactId>
