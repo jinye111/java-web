@@ -26,6 +26,7 @@
 						<showDeprecation>true</showDeprecation>
 						<showWarnings>true</showWarnings>
 						<verbose>false</verbose>
+						<encoding>UTF-8</encoding>
 					</configuration>
 			</plugin>
     	</plugins>
